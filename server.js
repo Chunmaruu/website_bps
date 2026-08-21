@@ -1,0 +1,76 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { sequelize } from './models/index.js';
+import authRoutes from './routes/authRoutes.js';
+import villageManagementRoutes from './routes/villageManagementRoutes.js';
+import templateRoutes from './routes/templateRoutes.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Sajikan file statis dari direktori 'public' dan 'gambar'
+app.use(express.static('public'));
+app.use('/gambar', express.static('gambar'));
+
+// Rute Autentikasi
+app.use('/api/auth', authRoutes);
+
+// Rute Manajemen Desa (Khusus Admin BPS)
+app.use('/api/admin/villages', villageManagementRoutes);
+
+// Rute Templat Website Desa
+app.use('/api/templates', templateRoutes);
+
+// Endpoint status (Health check)
+app.get('/api/status', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({
+      status: 'success',
+      message: 'Server Express berjalan dan database terhubung.',
+      timestamp: new Date(),
+      env: process.env.NODE_ENV,
+      db: {
+        dialect: process.env.DB_DIALECT || 'sqlite',
+        connected: true
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server Express berjalan tetapi koneksi database gagal.',
+      timestamp: new Date(),
+      error: error.message
+    });
+  }
+});
+
+// Jalankan server dan hubungkan ke database
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Koneksi database berhasil dilakukan.');
+    
+    // Sinkronisasi model database
+    await sequelize.sync();
+    console.log('Sinkronisasi model database berhasil.');
+    
+    app.listen(PORT, () => {
+      console.log(`Server berjalan dalam mode ${process.env.NODE_ENV || 'development'} pada port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Gagal menghubungkan ke database atau menjalankan server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
+export default app;

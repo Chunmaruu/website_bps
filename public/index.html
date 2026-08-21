@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeri Templat Website Desa - BPS Kabupaten Subang</title>
+  <meta name="description" content="Platform Galeri Templat Website Desa Resmi Badan Pusat Statistik Kabupaten Subang. Pilih dan kelola templat website desa di wilayah Kabupaten Subang.">
+  <link rel="stylesheet" href="style.css">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Header & Navigasi (Gaya Portal Resmi BPS Kabupaten Subang) -->
+  <header class="header">
+    <div class="container navbar">
+      <a href="#" class="logo" id="logo-link">
+        <!-- Logo Transparan BPS Subang -->
+        <img src="/gambar/logo.png" alt="Logo BPS Subang" class="bps-logo-img">
+        <div class="logo-text">
+          <h1>Badan Pusat Statistik</h1>
+          <span>Kabupaten Subang</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <div id="nav-guest" class="nav-user">
+          <button class="btn btn-secondary btn-sm" id="btn-open-login-desa"><i class="fa-solid fa-right-to-bracket"></i> Login Desa</button>
+          <button class="btn btn-bps-orange btn-sm" id="btn-open-register-desa"><i class="fa-solid fa-user-plus"></i> Registrasi Desa</button>
+          <button class="btn btn-secondary btn-sm" id="btn-open-login-bps" style="background: rgba(0, 163, 224, 0.2); border-color: rgba(0, 163, 224, 0.5);"><i class="fa-solid fa-shield-halved"></i> Admin BPS Subang</button>
+        </div>
+
+        <div id="nav-user-profile" class="nav-user" style="display: none;">
+          <div class="user-badge">
+            <i class="fa-solid fa-circle-user"></i>
+            <span id="user-display-name">Admin Desa</span>
+            <span id="user-display-role" class="user-role">Desa</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-dashboard" style="display: none;"><i class="fa-solid fa-sliders"></i> Panel BPS</button>
+          <button class="btn btn-danger btn-sm" id="btn-logout"><i class="fa-solid fa-power-off"></i> Keluar</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="container">
+
+    <!-- Breadcrumb (Khas Portal BPS Subang) -->
+    <div class="breadcrumb-bar">
+      <a href="#"><i class="fa-solid fa-house"></i> Beranda</a>
+      <span>&gt;</span>
+      <a href="#">BPS Kabupaten Subang</a>
+      <span>&gt;</span>
+      <span style="color: var(--text-title); font-weight: 600;">Galeri Templat Desa</span>
+    </div>
+
+    <!-- Hero / Judul Halaman -->
+    <section class="hero">
+      <div class="hero-badge">
+        <i class="fa-solid fa-circle-check"></i> Layanan Resmi BPS Kabupaten Subang
+      </div>
+      <h2>Galeri Templat Website Desa Kabupaten Subang</h2>
+      <p>Pilih dan gunakan templat website resmi berstandar nasional untuk desa-desa di seluruh wilayah Kabupaten Subang. Terintegrasi, responsif, dan siap pakai.</p>
+    </section>
+
+    <!-- Bar Kontrol Pencarian & Filter Kategori (Gaya BPS) -->
+    <section class="controls-card">
+      <div class="controls-bar">
+        <div class="filter-pills" id="filter-pills">
+          <button class="pill active" data-category=""><i class="fa-solid fa-list-check"></i> Semua Templat</button>
+          <button class="pill" data-category="Desa Wisata" style="color: #d97706;"><i class="fa-solid fa-umbrella-beach"></i> Desa Wisata</button>
+          <button class="pill" data-category="Desa Agraris" style="color: #16a34a;"><i class="fa-solid fa-seedling"></i> Desa Agraris</button>
+          <button class="pill" data-category="Desa Maritim" style="color: #0284c7;"><i class="fa-solid fa-ship"></i> Desa Maritim</button>
+          <button class="pill" data-category="Desa Digital" style="color: #7c3aed;"><i class="fa-solid fa-laptop-code"></i> Desa Digital</button>
+        </div>
+
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Cari nama templat...">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid Kartu Galeri Templat -->
+    <section class="template-grid" id="template-grid">
+      <!-- Di-render dinamis via JS -->
+    </section>
+
+    <!-- Panel Dashboard Admin BPS (Tampil saat Admin BPS login) -->
+    <section id="admin-dashboard-section" class="admin-dashboard" style="display: none;">
+      <div class="admin-header">
+        <div>
+          <h2><i class="fa-solid fa-sliders" style="color: var(--bps-blue);"></i> Panel Manajemen BPS Kabupaten Subang</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Kelola akun desa wilayah Subang dan katalog templat website master.</p>
+        </div>
+        <button class="btn btn-success" id="btn-open-create-template"><i class="fa-solid fa-plus-circle"></i> Tambah Templat Baru</button>
+      </div>
+
+      <!-- Tab Navigasi Admin -->
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-villages"><i class="fa-solid fa-city"></i> Manajemen &amp; Status Akun Desa</button>
+        <button class="tab-btn" id="tab-templates"><i class="fa-solid fa-layer-group"></i> Kelola Templat Master</button>
+      </div>
+
+      <!-- Tab 1: Manajemen Akun Desa -->
+      <div id="tab-content-villages">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Desa</th>
+                <th>Kecamatan / Kab / Prov</th>
+                <th>PIC</th>
+                <th>Email</th>
+                <th>Status Akun</th>
+                <th>Kelola Status (BPS)</th>
+              </tr>
+            </thead>
+            <tbody id="table-villages-body">
+              <!-- Data di-render via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 2: Manajemen Templat Master -->
+      <div id="tab-content-templates" style="display: none;">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nama Templat</th>
+                <th>Kategori</th>
+                <th>Tipe DB</th>
+                <th>Status</th>
+                <th>Link Preview</th>
+                <th>Aksi Status</th>
+              </tr>
+            </thead>
+            <tbody id="table-templates-body">
+              <!-- Data di-render via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL 1: Login Admin Desa -->
+  <div class="modal-overlay" id="modal-login-desa">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-house-chimney-user" style="color: var(--bps-blue);"></i> Login Admin Desa</h3>
+        <button class="close-btn" data-close="modal-login-desa">&times;</button>
+      </div>
+      <form id="form-login-desa">
+        <div class="form-group">
+          <label for="login-desa-email">Email Login Desa</label>
+          <input type="email" id="login-desa-email" class="form-control" required placeholder="admin@namadesa.desa.id">
+        </div>
+        <div class="form-group">
+          <label for="login-desa-password">Password</label>
+          <input type="password" id="login-desa-password" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Masuk ke Akun Desa</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Registrasi Admin Desa -->
+  <div class="modal-overlay" id="modal-register-desa">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-plus" style="color: var(--bps-orange);"></i> Registrasi Akun Desa</h3>
+        <button class="close-btn" data-close="modal-register-desa">&times;</button>
+      </div>
+      <form id="form-register-desa">
+        <div class="form-group">
+          <label for="reg-nama-desa">Nama Desa</label>
+          <input type="text" id="reg-nama-desa" class="form-control" required placeholder="Desa Sukamaju">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="reg-kecamatan">Kecamatan</label>
+            <input type="text" id="reg-kecamatan" class="form-control" required placeholder="Cibeunying">
+          </div>
+          <div class="form-group">
+            <label for="reg-kabupaten">Kabupaten</label>
+            <input type="text" id="reg-kabupaten" class="form-control" required value="Subang">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="reg-provinsi">Provinsi</label>
+            <input type="text" id="reg-provinsi" class="form-control" required value="Jawa Barat">
+          </div>
+          <div class="form-group">
+            <label for="reg-nama-pic">Penanggung Jawab (PIC)</label>
+            <input type="text" id="reg-nama-pic" class="form-control" required placeholder="Asep Saepudin">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email Resmi Desa</label>
+          <input type="email" id="reg-email" class="form-control" required placeholder="admin@sukamaju.desa.id">
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password Akun</label>
+          <input type="password" id="reg-password" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-bps-orange" style="width: 100%; margin-top: 1rem;">Daftar Akun Desa (Langsung Aktif)</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Login Admin BPS -->
+  <div class="modal-overlay" id="modal-login-bps">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-shield-halved" style="color: var(--bps-blue);"></i> Login Admin BPS Subang</h3>
+        <button class="close-btn" data-close="modal-login-bps">&times;</button>
+      </div>
+      <form id="form-login-bps">
+        <div class="form-group">
+          <label for="login-bps-email">Email Admin BPS</label>
+          <input type="email" id="login-bps-email" class="form-control" required placeholder="admin@bps.go.id" value="admin@bps.go.id">
+        </div>
+        <div class="form-group">
+          <label for="login-bps-password">Password</label>
+          <input type="password" id="login-bps-password" class="form-control" required placeholder="••••••••" value="admin123">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Masuk Panel BPS Subang</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Tambah Templat Baru (Khusus Admin BPS) -->
+  <div class="modal-overlay" id="modal-create-template">
+    <div class="modal-card" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-plus-circle" style="color: var(--bps-green);"></i> Tambah Templat Baru</h3>
+        <button class="close-btn" data-close="modal-create-template">&times;</button>
+      </div>
+      <form id="form-create-template">
+        <div class="form-group">
+          <label for="tpl-nama">Nama Templat</label>
+          <input type="text" id="tpl-nama" class="form-control" required placeholder="Desa Mandiri Sejahtera">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="tpl-kategori">Kategori</label>
+            <select id="tpl-kategori" class="form-control" required>
+              <option value="Desa Wisata">Desa Wisata</option>
+              <option value="Desa Agraris">Desa Agraris</option>
+              <option value="Desa Maritim">Desa Maritim</option>
+              <option value="Desa Digital">Desa Digital</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="tpl-tipe-db">Tipe Database</label>
+            <select id="tpl-tipe-db" class="form-control" required>
+              <option value="Statis">Statis</option>
+              <option value="Spreadsheet">Spreadsheet</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tpl-link">Link Templat (Tujuan Redirect)</label>
+          <input type="url" id="tpl-link" class="form-control" required placeholder="https://preview-templat.example.com">
+        </div>
+        <div class="form-group">
+          <label for="tpl-thumbnail">URL Thumbnail Preview (Gambar)</label>
+          <input type="url" id="tpl-thumbnail" class="form-control" placeholder="https://images.unsplash.com/photo-...">
+        </div>
+        <div class="form-group">
+          <label for="tpl-deskripsi">Deskripsi Templat</label>
+          <textarea id="tpl-deskripsi" class="form-control" placeholder="Penjelasan singkat mengenai fitur templat..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 1rem;">Simpan ke Google Spreadsheet Master</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer BPS Subang -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 <strong>Badan Pusat Statistik Kabupaten Subang</strong>. Hak Cipta Dilindungi.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

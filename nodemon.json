@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "server.js",
+    "controllers",
+    "models",
+    "routes",
+    "config",
+    "middleware"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "gambar/*",
+    "public/*",
+    "database.sqlite*",
+    "*.sqlite"
+  ]
+}
