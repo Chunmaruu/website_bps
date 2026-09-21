@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
 
 // Memastikan variabel lingkungan dimuat
@@ -12,6 +13,7 @@ if (dialect === 'sqlite') {
   const storagePath = process.env.DB_STORAGE || (process.env.VERCEL ? '/tmp/database.sqlite' : './database.sqlite');
   sequelize = new Sequelize({
     dialect: 'sqlite',
+    dialectModule: sqlite3,
     storage: storagePath,
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
   });
