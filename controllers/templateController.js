@@ -3,6 +3,7 @@ import {
   appendTemplateToSheet,
   updateTemplateInSheet,
 } from '../config/sheets.js';
+import { Review } from '../models/index.js';
 
 /**
  * Mendapatkan galeri templat (untuk publik/Admin Desa)
@@ -37,6 +38,32 @@ export const getPublicTemplates = async (req, res) => {
       );
     }
 
+    // Ambil data review dari database SQLite untuk menghitung rating riil
+    const allReviews = await Review.findAll();
+    const reviewsByTemplate = {};
+    for (const r of allReviews) {
+      if (!reviewsByTemplate[r.template_id]) {
+        reviewsByTemplate[r.template_id] = [];
+      }
+      reviewsByTemplate[r.template_id].push(r);
+    }
+
+    // Pasangkan data review & rating ke setiap templat
+    templates = templates.map((t) => {
+      const templateReviews = reviewsByTemplate[t.id] || [];
+      const reviewCount = templateReviews.length;
+      let avgRating = 5.0;
+      if (reviewCount > 0) {
+        const sum = templateReviews.reduce((acc, r) => acc + r.rating, 0);
+        avgRating = parseFloat((sum / reviewCount).toFixed(1));
+      }
+      return {
+        ...t,
+        rating: avgRating,
+        total_reviews: reviewCount,
+      };
+    });
+
     res.json({
       status: 'success',
       total: templates.length,
@@ -67,9 +94,21 @@ export const getTemplateById = async (req, res) => {
       });
     }
 
+    const templateReviews = await Review.findAll({ where: { template_id: id } });
+    const reviewCount = templateReviews.length;
+    let avgRating = 5.0;
+    if (reviewCount > 0) {
+      const sum = templateReviews.reduce((acc, r) => acc + r.rating, 0);
+      avgRating = parseFloat((sum / reviewCount).toFixed(1));
+    }
+
     res.json({
       status: 'success',
-      data: template,
+      data: {
+        ...template,
+        rating: avgRating,
+        total_reviews: reviewCount,
+      },
     });
   } catch (error) {
     res.status(500).json({

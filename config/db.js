@@ -9,7 +9,7 @@ const dialect = process.env.DB_DIALECT || 'sqlite';
 let sequelize;
 
 if (dialect === 'sqlite') {
-  const storagePath = process.env.DB_STORAGE || './database.sqlite';
+  const storagePath = process.env.DB_STORAGE || (process.env.VERCEL ? '/tmp/database.sqlite' : './database.sqlite');
   sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: storagePath,

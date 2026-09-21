@@ -5,6 +5,7 @@ import { sequelize } from './models/index.js';
 import authRoutes from './routes/authRoutes.js';
 import villageManagementRoutes from './routes/villageManagementRoutes.js';
 import templateRoutes from './routes/templateRoutes.js';
+import hostedWebsiteRoutes from './routes/hostedWebsiteRoutes.js';
 
 dotenv.config();
 
@@ -28,6 +29,9 @@ app.use('/api/admin/villages', villageManagementRoutes);
 
 // Rute Templat Website Desa
 app.use('/api/templates', templateRoutes);
+
+// Rute Direktori Website Desa yang Sudah Hosting
+app.use('/api/hosted-websites', hostedWebsiteRoutes);
 
 // Endpoint status (Health check)
 app.get('/api/status', async (req, res) => {
@@ -62,15 +66,42 @@ const startServer = async () => {
     // Sinkronisasi model database
     await sequelize.sync();
     console.log('Sinkronisasi model database berhasil.');
+
+    // Auto-seed default Admin BPS jika belum ada (berguna untuk SQLite baru di /tmp)
+    try {
+      const defaultEmail = 'admin@bps.go.id';
+      const { AdminBps } = await import('./models/index.js');
+      const existingAdmin = await AdminBps.findOne({ where: { email: defaultEmail } });
+      if (!existingAdmin) {
+        const bcrypt = (await import('bcryptjs')).default;
+        const salt = await bcrypt.genSalt(10);
+        const password_hash = await bcrypt.hash('admin123', salt);
+        await AdminBps.create({
+          nama: 'Super Admin BPS',
+          email: defaultEmail,
+          password_hash,
+          status: 'aktif',
+        });
+        console.log('Auto-seed default Admin BPS berhasil (admin@bps.go.id).');
+      }
+    } catch (seedErr) {
+      console.warn('Notice seeding admin:', seedErr.message);
+    }
     
-    app.listen(PORT, () => {
-      console.log(`Server berjalan dalam mode ${process.env.NODE_ENV || 'development'} pada port ${PORT}`);
-    });
+    // Hanya lakukan app.listen jika tidak berjalan di environment serverless Vercel
+    if (!process.env.VERCEL) {
+      app.listen(PORT, () => {
+        console.log(`Server berjalan dalam mode ${process.env.NODE_ENV || 'development'} pada port ${PORT}`);
+      });
+    }
   } catch (error) {
     console.error('Gagal menghubungkan ke database atau menjalankan server:', error);
-    process.exit(1);
+    if (!process.env.VERCEL) {
+      process.exit(1);
+    }
   }
 };
 
 startServer();
 export default app;
+

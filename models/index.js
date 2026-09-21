@@ -1,16 +1,18 @@
 import sequelize from '../config/db.js';
 import AdminBps from './AdminBps.js';
 import AdminDesa from './AdminDesa.js';
+import Review from './Review.js';
 
-// Tempat mendefinisikan asosiasi/relasi antar tabel di masa depan
-// Misalnya jika kita ingin mencatat admin BPS mana yang menyetujui akun desa:
-// AdminDesa.belongsTo(AdminBps, { foreignKey: 'approved_by', as: 'approver' });
+// Relasi tabel
+AdminDesa.hasMany(Review, { foreignKey: 'user_id', as: 'reviews', constraints: false });
+Review.belongsTo(AdminDesa, { foreignKey: 'user_id', as: 'desa', constraints: false });
 
 const db = {
   sequelize,
   AdminBps,
   AdminDesa,
+  Review,
 };
 
-export { sequelize, AdminBps, AdminDesa };
+export { sequelize, AdminBps, AdminDesa, Review };
 export default db;
