@@ -60,15 +60,15 @@ app.get('/api/status', async (req, res) => {
 // Jalankan server dan hubungkan ke database
 const startServer = async () => {
   try {
-    await sequelize.authenticate();
-    console.log('Koneksi database berhasil dilakukan.');
-    
-    // Sinkronisasi model database
-    await sequelize.sync();
-    console.log('Sinkronisasi model database berhasil.');
-
-    // Auto-seed default Admin BPS jika belum ada (berguna untuk SQLite baru di /tmp)
     try {
+      await sequelize.authenticate();
+      console.log('Koneksi database berhasil dilakukan.');
+      
+      // Sinkronisasi model database
+      await sequelize.sync();
+      console.log('Sinkronisasi model database berhasil.');
+
+      // Auto-seed default Admin BPS jika belum ada (berguna untuk SQLite baru di /tmp)
       const defaultEmail = 'admin@bps.go.id';
       const { AdminBps } = await import('./models/index.js');
       const existingAdmin = await AdminBps.findOne({ where: { email: defaultEmail } });
@@ -84,8 +84,8 @@ const startServer = async () => {
         });
         console.log('Auto-seed default Admin BPS berhasil (admin@bps.go.id).');
       }
-    } catch (seedErr) {
-      console.warn('Notice seeding admin:', seedErr.message);
+    } catch (dbErr) {
+      console.warn('Database connection/sync warning:', dbErr.message);
     }
     
     // Hanya lakukan app.listen jika tidak berjalan di environment serverless Vercel
@@ -95,7 +95,7 @@ const startServer = async () => {
       });
     }
   } catch (error) {
-    console.error('Gagal menghubungkan ke database atau menjalankan server:', error);
+    console.error('Gagal menjalankan server:', error);
     if (!process.env.VERCEL) {
       process.exit(1);
     }
