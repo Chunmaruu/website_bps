@@ -91,7 +91,7 @@ const startServer = async () => {
 
       // Auto-seed default Admin BPS jika belum ada (berguna untuk SQLite baru di /tmp)
       const defaultEmail = 'admin@bps.go.id';
-      const { AdminBps } = await import('./models/index.js');
+      const { AdminBps, AdminDesa } = await import('./models/index.js');
       const existingAdmin = await AdminBps.findOne({ where: { email: defaultEmail } });
       if (!existingAdmin) {
         const bcrypt = (await import('bcryptjs')).default;
@@ -104,6 +104,58 @@ const startServer = async () => {
           status: 'aktif',
         });
         console.log('Auto-seed default Admin BPS berhasil (admin@bps.go.id).');
+      }
+
+      // Auto-seed sample Admin Desa jika belum ada data (berguna untuk SQLite baru di /tmp Vercel)
+      const villageCount = await AdminDesa.count();
+      if (villageCount === 0) {
+        const bcrypt = (await import('bcryptjs')).default;
+        const salt = await bcrypt.genSalt(10);
+        const desaPasswordHash = await bcrypt.hash('desa123', salt);
+
+        await AdminDesa.bulkCreate([
+          {
+            nama_desa: 'Desa Ciater',
+            kecamatan: 'Kec. Ciater',
+            kabupaten: 'Kab. Subang',
+            provinsi: 'Jawa Barat',
+            nama_pic: 'Hendra Gunawan',
+            email: 'desa@subang.desa.id',
+            password_hash: desaPasswordHash,
+            status: 'approved',
+          },
+          {
+            nama_desa: 'Kalijati Barat',
+            kecamatan: 'Kec. Kalijati',
+            kabupaten: 'Kab. Subang',
+            provinsi: 'Jawa Barat',
+            nama_pic: 'Asep Saepudin',
+            email: 'desa@gmail.com',
+            password_hash: desaPasswordHash,
+            status: 'approved',
+          },
+          {
+            nama_desa: 'Desa Sukamaju',
+            kecamatan: 'Kec. Pagaden',
+            kabupaten: 'Kab. Subang',
+            provinsi: 'Jawa Barat',
+            nama_pic: 'Ujang Suryana',
+            email: 'ujang@sukamaju.desa.id',
+            password_hash: desaPasswordHash,
+            status: 'approved',
+          },
+          {
+            nama_desa: 'Desa Bojongsoang',
+            kecamatan: 'Kec. Subang',
+            kabupaten: 'Kab. Subang',
+            provinsi: 'Jawa Barat',
+            nama_pic: 'Dede Kurnia',
+            email: 'dede@bojongsoang.desa.id',
+            password_hash: desaPasswordHash,
+            status: 'pending',
+          },
+        ]);
+        console.log('Auto-seed sample Admin Desa berhasil.');
       }
     } catch (dbErr) {
       console.warn('Database connection/sync warning:', dbErr.message);
