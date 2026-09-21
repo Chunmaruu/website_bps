@@ -191,6 +191,74 @@ function setupEventListeners() {
       e.target.classList.remove('input-error');
     });
   });
+
+  // Mobile Drawer Navigation
+  setupMobileDrawer();
+}
+
+// Inisialisasi Mobile Drawer & Off-Canvas Menu
+function setupMobileDrawer() {
+  const btnHamburger = document.getElementById('btn-hamburger');
+  const btnCloseDrawer = document.getElementById('btn-close-drawer');
+  const drawerOverlay = document.getElementById('mobile-drawer-overlay');
+  const drawer = document.getElementById('mobile-drawer');
+
+  function openDrawer() {
+    drawer?.classList.add('open');
+    drawerOverlay?.classList.add('open');
+    document.body.classList.add('drawer-open');
+  }
+
+  function closeDrawer() {
+    drawer?.classList.remove('open');
+    drawerOverlay?.classList.remove('open');
+    document.body.classList.remove('drawer-open');
+  }
+
+  btnHamburger?.addEventListener('click', openDrawer);
+  btnCloseDrawer?.addEventListener('click', closeDrawer);
+  drawerOverlay?.addEventListener('click', closeDrawer);
+
+  // Drawer Auth Actions
+  document.getElementById('btn-drawer-login-desa')?.addEventListener('click', () => {
+    closeDrawer();
+    openModal('modal-login-desa');
+  });
+  document.getElementById('btn-drawer-register-desa')?.addEventListener('click', () => {
+    closeDrawer();
+    openModal('modal-register-desa');
+  });
+  document.getElementById('btn-drawer-login-bps')?.addEventListener('click', () => {
+    closeDrawer();
+    openModal('modal-login-bps');
+  });
+  document.getElementById('btn-drawer-logout')?.addEventListener('click', () => {
+    closeDrawer();
+    handleLogout();
+  });
+  document.getElementById('btn-drawer-dashboard')?.addEventListener('click', () => {
+    closeDrawer();
+    elements.adminDashboardSection?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Drawer Page Links
+  document.getElementById('drawer-nav-templates')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDrawer();
+    switchMainPortalTab('templates');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.getElementById('drawer-nav-hosted')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDrawer();
+    switchMainPortalTab('hosted');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.getElementById('drawer-nav-benefits')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDrawer();
+    document.getElementById('benefits-section')?.scrollIntoView({ behavior: 'smooth' });
+  });
 }
 
 // Global modal helpers
@@ -297,11 +365,26 @@ function updateUIAuth(isLoggedIn) {
   const metaStatusBadge = document.getElementById('meta-status-badge');
   const benefitsSection = document.getElementById('benefits-section');
 
+  const drawerGuest = document.getElementById('drawer-guest');
+  const drawerUserProfile = document.getElementById('drawer-user-profile');
+  const drawerUserName = document.getElementById('drawer-user-name');
+  const drawerUserRole = document.getElementById('drawer-user-role');
+  const btnDrawerDashboard = document.getElementById('btn-drawer-dashboard');
+
   if (isLoggedIn && state.user) {
     elements.navGuest.style.display = 'none';
     elements.navUserProfile.style.display = 'flex';
     elements.userDisplayName.textContent = state.user.nama || state.user.nama_desa || state.user.email;
     elements.userDisplayRole.textContent = state.user.role.toUpperCase();
+
+    // Sync Mobile Drawer
+    if (drawerGuest) drawerGuest.style.display = 'none';
+    if (drawerUserProfile) drawerUserProfile.style.display = 'block';
+    if (drawerUserName) drawerUserName.textContent = state.user.nama || state.user.nama_desa || state.user.email;
+    if (drawerUserRole) drawerUserRole.textContent = state.user.role.toUpperCase();
+    if (btnDrawerDashboard) {
+      btnDrawerDashboard.style.display = (state.user.role === 'bps') ? 'flex' : 'none';
+    }
 
     if (guestNoticeBox) guestNoticeBox.style.display = 'none';
     if (stickyBottomBar) stickyBottomBar.style.display = 'none';
@@ -323,6 +406,10 @@ function updateUIAuth(isLoggedIn) {
     elements.navGuest.style.display = 'flex';
     elements.navUserProfile.style.display = 'none';
     elements.adminDashboardSection.style.display = 'none';
+
+    // Sync Mobile Drawer
+    if (drawerGuest) drawerGuest.style.display = 'flex';
+    if (drawerUserProfile) drawerUserProfile.style.display = 'none';
 
     if (guestNoticeBox) guestNoticeBox.style.display = 'flex';
     if (stickyBottomBar) stickyBottomBar.style.display = 'flex';
@@ -906,6 +993,9 @@ function switchMainPortalTab(tab) {
     if (heroDescription) {
       heroDescription.textContent = 'Pilih dan gunakan templat website resmi berstandar statistik nasional untuk mewujudkan Satu Data Desa di seluruh wilayah Kabupaten Subang. Terintegrasi, responsif, dan siap pakai.';
     }
+    // Sync Drawer Nav Link
+    document.getElementById('drawer-nav-templates')?.classList.add('active');
+    document.getElementById('drawer-nav-hosted')?.classList.remove('active');
   } else {
     tabNavHosted?.classList.add('active');
     tabNavTemplates?.classList.remove('active');
@@ -914,6 +1004,9 @@ function switchMainPortalTab(tab) {
     if (heroDescription) {
       heroDescription.textContent = 'Jelajahi direktori website resmi pemerintah desa di Kabupaten Subang yang telah memilih templat berstandar BPS dan sudah aktif di-hosting online.';
     }
+    // Sync Drawer Nav Link
+    document.getElementById('drawer-nav-hosted')?.classList.add('active');
+    document.getElementById('drawer-nav-templates')?.classList.remove('active');
     loadHostedWebsites();
   }
 }

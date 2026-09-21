@@ -1658,6 +1658,252 @@ footer p {
 }
 
 /* ==========================================================================
+   MOBILE HAMBURGER & OFF-CANVAS DRAWER
+   ========================================================================== */
+.btn-hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.mobile-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 23, 48, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 2100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+}
+
+.mobile-drawer-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 310px;
+  max-width: 86vw;
+  height: 100%;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 2200;
+  box-shadow: -10px 0 30px rgba(0, 23, 48, 0.25);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+.mobile-drawer.open {
+  transform: translateX(0);
+}
+
+body.drawer-open {
+  overflow: hidden !important;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--bps-navy);
+  color: #ffffff;
+  border-bottom: 3px solid var(--bps-blue-light);
+  flex-shrink: 0;
+}
+
+.drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-logo-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.drawer-brand-text h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.drawer-brand-text span {
+  font-size: 0.7rem;
+  color: #93c5fd;
+  display: block;
+}
+
+.btn-close-drawer {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-close-drawer:active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.drawer-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  overflow-y: auto;
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawer-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.drawer-auth-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawer-auth-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.drawer-btn {
+  width: 100%;
+  justify-content: center;
+  min-height: 42px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawer-user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 6px;
+}
+
+.drawer-user-avatar {
+  font-size: 2rem;
+  color: var(--bps-blue);
+  line-height: 1;
+}
+
+.drawer-user-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.drawer-user-meta strong {
+  font-size: 0.9rem;
+  color: var(--text-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drawer-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--text-body);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, color 0.2s;
+}
+
+.drawer-nav-link i {
+  font-size: 1rem;
+  color: var(--bps-blue);
+  width: 20px;
+  text-align: center;
+}
+
+.drawer-nav-link:hover,
+.drawer-nav-link.active {
+  background: #eff6ff;
+  color: var(--bps-blue);
+}
+
+.drawer-footer-info {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.drawer-footer-info p {
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+/* ==========================================================================
    RESPONSIVE MOBILE & TABLET MEDIA QUERIES (OVERFLOW-PROOF)
    ========================================================================== */
 
@@ -1709,25 +1955,29 @@ img, video, canvas {
   }
 
   .navbar {
-    height: auto !important;
-    min-height: auto !important;
-    padding: 10px 0 !important;
-    flex-direction: column !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    padding: 0 8px !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 8px !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .logo {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     text-align: left !important;
-    gap: 10px !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    gap: 8px !important;
+    width: auto !important;
+    max-width: calc(100% - 50px) !important;
     min-width: 0 !important;
+    flex: 1 1 auto !important;
+    text-decoration: none !important;
   }
 
   .bps-logo-img {
@@ -1739,66 +1989,56 @@ img, video, canvas {
   .logo-text {
     min-width: 0 !important;
     flex: 1 1 auto !important;
+    overflow: hidden !important;
   }
 
   .logo-text h1 {
-    font-size: 0.92rem !important;
+    font-size: 0.88rem !important;
     letter-spacing: -0.01em !important;
-    line-height: 1.2 !important;
-    white-space: normal !important;
-    word-break: normal !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
     color: #ffffff !important;
     margin: 0 !important;
   }
 
   .logo-text span {
-    font-size: 0.72rem !important;
-    line-height: 1.2 !important;
+    font-size: 0.68rem !important;
+    line-height: 1.15 !important;
     color: #93c5fd !important;
     display: block !important;
-    margin-top: 2px !important;
-  }
-
-  .nav-links {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    margin: 0 !important;
-  }
-
-  /* Grid layout for auth buttons so they NEVER overflow 360px */
-  .nav-user {
-    width: 100% !important;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 6px !important;
-    box-sizing: border-box !important;
-  }
-
-  .nav-user .btn {
-    font-size: 0.76rem !important;
-    padding: 7px 6px !important;
+    margin-top: 1px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    text-align: center !important;
-    justify-content: center !important;
-    min-height: 36px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
   }
 
-  #btn-open-login-bps, 
-  #btn-dashboard {
-    grid-column: span 2 !important;
+  /* Sembunyikan deretan tombol navbar desktop pada layar mobile */
+  .nav-links {
+    display: none !important;
   }
 
-  .user-badge {
-    grid-column: span 2 !important;
-    width: 100% !important;
+  /* Tampilkan tombol Hamburger di mobile */
+  .btn-hamburger {
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
-    font-size: 0.8rem !important;
-    padding: 6px 12px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-size: 1.25rem !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .btn-hamburger:active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(0.94) !important;
   }
 
   /* Breadcrumb */

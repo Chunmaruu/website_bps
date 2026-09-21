@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeri Templat Website Desa - BPS Kabupaten Subang</title>
   <meta name="description" content="Platform Galeri Templat Website Desa Resmi Badan Pusat Statistik Kabupaten Subang. Pilih dan kelola templat website desa di wilayah Kabupaten Subang.">
-  <link rel="stylesheet" href="style.css?v=3.0">
+  <link rel="stylesheet" href="style.css?v=4.0">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -40,6 +40,11 @@
           <button class="btn btn-danger btn-sm" id="btn-logout"><i class="fa-solid fa-power-off"></i> Keluar</button>
         </div>
       </nav>
+
+      <!-- Tombol Hamburger Menu Mobile -->
+      <button class="btn-hamburger" id="btn-hamburger" aria-label="Buka Menu Navigasi">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
   </header>
 
@@ -620,6 +625,95 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- Mobile Drawer Menu (Off-Canvas) -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Menu Navigasi Mobile">
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <img src="/gambar/logo.png" alt="Logo BPS Subang" class="drawer-logo-img">
+        <div class="drawer-brand-text">
+          <h3>BPS Subang</h3>
+          <span>Portal Layanan Desa</span>
+        </div>
+      </div>
+      <button class="btn-close-drawer" id="btn-close-drawer" aria-label="Tutup Menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Status Akun & Autentikasi -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Akses Akun</span>
+        
+        <!-- Kondisi Tamu / Belum Login -->
+        <div id="drawer-guest" class="drawer-auth-box">
+          <p class="drawer-auth-hint">Masuk untuk evaluasi desa, rating templat, atau akses manajemen BPS:</p>
+          <button class="btn btn-secondary drawer-btn" id="btn-drawer-login-desa">
+            <i class="fa-solid fa-right-to-bracket"></i> Login Desa
+          </button>
+          <button class="btn btn-bps-orange drawer-btn" id="btn-drawer-register-desa">
+            <i class="fa-solid fa-user-plus"></i> Registrasi Desa
+          </button>
+          <button class="btn btn-secondary drawer-btn" id="btn-drawer-login-bps" style="background: rgba(0, 163, 224, 0.12); border-color: rgba(0, 163, 224, 0.4);">
+            <i class="fa-solid fa-shield-halved"></i> Admin BPS Subang
+          </button>
+        </div>
+
+        <!-- Kondisi Sudah Login -->
+        <div id="drawer-user-profile" class="drawer-auth-box" style="display: none;">
+          <div class="drawer-user-card">
+            <div class="drawer-user-avatar">
+              <i class="fa-solid fa-circle-user"></i>
+            </div>
+            <div class="drawer-user-meta">
+              <strong id="drawer-user-name">Admin Desa</strong>
+              <span id="drawer-user-role" class="user-role">Desa</span>
+            </div>
+          </div>
+          <button class="btn btn-secondary drawer-btn" id="btn-drawer-dashboard" style="display: none;">
+            <i class="fa-solid fa-sliders"></i> Panel BPS Subang
+          </button>
+          <button class="btn btn-danger drawer-btn" id="btn-drawer-logout">
+            <i class="fa-solid fa-power-off"></i> Keluar (Logout)
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigasi Halaman Utama -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Navigasi Portal</span>
+        <ul class="drawer-nav-list">
+          <li>
+            <a href="#" class="drawer-nav-link active" id="drawer-nav-templates">
+              <i class="fa-solid fa-cubes"></i>
+              <span>1. Galeri Templat Desa</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="drawer-nav-link" id="drawer-nav-hosted">
+              <i class="fa-solid fa-globe"></i>
+              <span>2. Web Desa yang Sudah Hosting</span>
+              <span class="live-pill" style="margin-left: auto;">LIVE</span>
+            </a>
+          </li>
+          <li>
+            <a href="#benefits-section" class="drawer-nav-link" id="drawer-nav-benefits">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Manfaat Go-Online Desa</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Info Footer Drawer -->
+      <div class="drawer-footer-info">
+        <p><i class="fa-solid fa-building-columns"></i> BPS Kabupaten Subang</p>
+        <small>Jl. Aipda KS Tubun No.12, Cigadung, Subang</small>
+      </div>
+    </div>
+  </aside>
+
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>
