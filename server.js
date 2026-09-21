@@ -7,6 +7,12 @@ import villageManagementRoutes from './routes/villageManagementRoutes.js';
 import templateRoutes from './routes/templateRoutes.js';
 import hostedWebsiteRoutes from './routes/hostedWebsiteRoutes.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 dotenv.config();
 
 const app = express();
@@ -17,9 +23,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sajikan file statis dari direktori 'public' dan 'gambar'
-app.use(express.static('public'));
-app.use('/gambar', express.static('gambar'));
+// Sajikan file statis dari direktori 'public', root, dan 'gambar'
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
+app.use('/gambar', express.static(path.join(__dirname, 'gambar')));
+app.use('/gambar', express.static(path.join(__dirname, 'public', 'gambar')));
+
+// Handler eksplisit untuk halaman utama
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Rute Autentikasi
 app.use('/api/auth', authRoutes);
@@ -55,6 +68,14 @@ app.get('/api/status', async (req, res) => {
       error: error.message
     });
   }
+});
+
+// Fallback jika ada request GET yang bukan /api
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Jalankan server dan hubungkan ke database
