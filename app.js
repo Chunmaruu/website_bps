@@ -1045,7 +1045,7 @@ function switchMainPortalTab(tab) {
     if (sectionTemplates) sectionTemplates.style.display = 'block';
     if (sectionHosted) sectionHosted.style.display = 'none';
     if (heroDescription) {
-      heroDescription.textContent = 'Pilih dan gunakan templat website resmi berstandar statistik nasional untuk mewujudkan Satu Data Desa di seluruh wilayah Kabupaten Subang. Terintegrasi, responsif, dan siap pakai.';
+      heroDescription.textContent = 'Pilih dan gunakan templat website berstandar statistik nasional untuk mewujudkan Satu Data Desa di seluruh wilayah Kabupaten Subang. Terintegrasi, responsif, dan siap pakai.';
     }
     // Sync Drawer Nav Link
     document.getElementById('drawer-nav-templates')?.classList.add('active');
@@ -1056,7 +1056,7 @@ function switchMainPortalTab(tab) {
     if (sectionTemplates) sectionTemplates.style.display = 'none';
     if (sectionHosted) sectionHosted.style.display = 'block';
     if (heroDescription) {
-      heroDescription.textContent = 'Jelajahi direktori website resmi pemerintah desa di Kabupaten Subang yang telah memilih templat berstandar BPS dan sudah aktif di-hosting online.';
+      heroDescription.textContent = 'Jelajahi direktori website desa di Kabupaten Subang yang telah memilih templat berstandar BPS dan sudah aktif di-hosting online.';
     }
     // Sync Drawer Nav Link
     document.getElementById('drawer-nav-hosted')?.classList.add('active');
