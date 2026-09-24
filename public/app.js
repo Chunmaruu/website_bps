@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   checkAuthSession();
   loadTemplates();
+  checkAdminRoute();
+  window.addEventListener('hashchange', checkAdminRoute);
 });
 
 // Event Listeners
@@ -192,8 +194,64 @@ function setupEventListeners() {
     });
   });
 
+  // Akses Internal BPS via Link Footer
+  document.getElementById('link-footer-admin-bps')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (state.token && state.user?.role === 'bps') {
+      elements.adminDashboardSection?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      openModal('modal-login-bps');
+    }
+  });
+
+  // Shortcut Keyboard Khusus Staf BPS: Ctrl + Shift + B
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'B' || e.key === 'b')) {
+      e.preventDefault();
+      if (state.token && state.user?.role === 'bps') {
+        elements.adminDashboardSection?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        openModal('modal-login-bps');
+      }
+    }
+  });
+
+  // Akses Rahasia: Klik Logo BPS 3x Cepat
+  let logoClickCount = 0;
+  let logoClickTimer;
+  document.getElementById('logo-link')?.addEventListener('click', (e) => {
+    logoClickCount++;
+    clearTimeout(logoClickTimer);
+    logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 800);
+    if (logoClickCount >= 3) {
+      e.preventDefault();
+      logoClickCount = 0;
+      if (state.token && state.user?.role === 'bps') {
+        elements.adminDashboardSection?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        openModal('modal-login-bps');
+      }
+    }
+  });
+
   // Mobile Drawer Navigation
   setupMobileDrawer();
+}
+
+// Pemeriksaan Rute /admin atau #admin
+function checkAdminRoute() {
+  const isUrlAdmin = window.location.pathname === '/admin' || window.location.hash === '#admin';
+  if (isUrlAdmin) {
+    if (state.token && state.user?.role === 'bps') {
+      setTimeout(() => {
+        elements.adminDashboardSection?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    } else {
+      setTimeout(() => {
+        openModal('modal-login-bps');
+      }, 150);
+    }
+  }
 }
 
 // Inisialisasi Mobile Drawer & Off-Canvas Menu
@@ -227,10 +285,6 @@ function setupMobileDrawer() {
   document.getElementById('btn-drawer-register-desa')?.addEventListener('click', () => {
     closeDrawer();
     openModal('modal-register-desa');
-  });
-  document.getElementById('btn-drawer-login-bps')?.addEventListener('click', () => {
-    closeDrawer();
-    openModal('modal-login-bps');
   });
   document.getElementById('btn-drawer-logout')?.addEventListener('click', () => {
     closeDrawer();

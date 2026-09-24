@@ -1915,6 +1915,24 @@ body.drawer-open {
   margin-bottom: 2px;
 }
 
+/* Discreet Link Admin BPS di Footer */
+.footer-admin-link {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.76rem;
+  transition: color 0.2s, opacity 0.2s;
+  opacity: 0.75;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer-admin-link:hover {
+  color: #94a3b8;
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* ==========================================================================
    RESPONSIVE MOBILE & TABLET MEDIA QUERIES (OVERFLOW-PROOF)
    ========================================================================== */

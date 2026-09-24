@@ -29,8 +29,8 @@ app.use(express.static(__dirname));
 app.use('/gambar', express.static(path.join(__dirname, 'gambar')));
 app.use('/gambar', express.static(path.join(__dirname, 'public', 'gambar')));
 
-// Handler eksplisit untuk halaman utama
-app.get('/', (req, res) => {
+// Handler eksplisit untuk halaman utama dan portal admin
+app.get(['/', '/admin'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
