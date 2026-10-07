@@ -2635,3 +2635,9 @@ img, video, canvas {
 
 
 
+
+
+/* Footer tidak tertimpa sticky bottom bar (mode tamu) */
+body.has-sticky-bar footer {
+  padding-bottom: calc(1.75rem + var(--sticky-bar-h, 72px)) !important;
+}

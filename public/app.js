@@ -444,6 +444,7 @@ function updateUIAuth(isLoggedIn) {
 
     if (guestNoticeBox) guestNoticeBox.style.display = 'none';
     if (stickyBottomBar) stickyBottomBar.style.display = 'none';
+    syncStickyBarSpacing();
     if (benefitsSection) benefitsSection.style.display = 'none';
     if (metaStatusBadge) {
       metaStatusBadge.textContent = 'Status: Akses Penuh Terbuka (' + state.user.role.toUpperCase() + ')';
@@ -469,6 +470,7 @@ function updateUIAuth(isLoggedIn) {
 
     if (guestNoticeBox) guestNoticeBox.style.display = 'flex';
     if (stickyBottomBar) stickyBottomBar.style.display = 'flex';
+    syncStickyBarSpacing();
     if (benefitsSection) benefitsSection.style.display = 'block';
     if (metaStatusBadge) {
       metaStatusBadge.textContent = 'Status: Publik Terbatas';
@@ -1507,3 +1509,16 @@ async function handleReviewSubmit(e) {
     }
   }
 }
+
+
+// Beri ruang di bawah footer setinggi sticky bar agar footer tidak tertimpa
+function syncStickyBarSpacing() {
+  const bar = document.getElementById('sticky-bottom-bar');
+  const visible = !!bar && getComputedStyle(bar).display !== 'none';
+  document.body.classList.toggle('has-sticky-bar', visible);
+  if (visible) {
+    document.documentElement.style.setProperty('--sticky-bar-h', bar.offsetHeight + 'px');
+  }
+}
+window.addEventListener('resize', syncStickyBarSpacing);
+window.addEventListener('load', syncStickyBarSpacing);
