@@ -180,9 +180,10 @@ function setupEventListeners() {
 
   // Guest Benefits & Sticky Buttons
   document.getElementById('btn-benefit-register')?.addEventListener('click', () => openModal('modal-register-desa'));
-  document.getElementById('btn-benefit-guide')?.addEventListener('click', () => {
-    alert('Informasi Panduan & Syarat Akses Galeri Templat BPS Subang:\n\n1. Layanan terbuka untuk seluruh Pemerintahan Desa di Kabupaten Subang.\n2. Lakukan "Registrasi Akun Desa" untuk membuka akses review lengkap, telaah arsitektur, dan live demo.\n3. Pendampingan integrasi data dan pelatihan teknis disediakan oleh tim BPS Kabupaten Subang.');
-  });
+  document.getElementById('btn-benefit-guide')?.addEventListener('click', () => openModal('modal-guide'));
+  document.getElementById('btn-guide-register')?.addEventListener('click', () => { closeModal('modal-guide'); openModal('modal-register-desa'); });
+  document.getElementById('btn-guide-login')?.addEventListener('click', () => { closeModal('modal-guide'); openModal('modal-login-desa'); });
+  document.getElementById('btn-confirm-logout')?.addEventListener('click', () => { closeModal('modal-logout-confirm'); performLogout(); });
   document.getElementById('btn-sticky-register')?.addEventListener('click', () => openModal('modal-register-desa'));
   document.getElementById('btn-sticky-login')?.addEventListener('click', () => openModal('modal-login-desa'));
   document.getElementById('meta-status-badge')?.addEventListener('click', () => {
@@ -407,7 +408,7 @@ async function checkAuthSession() {
         loadAdminDashboardData();
       }
     } else {
-      handleLogout();
+      performLogout({ silent: true });
     }
   } catch (err) {
     console.error('Session check error:', err);
@@ -486,12 +487,21 @@ function updateUIAuth(isLoggedIn) {
 }
 
 function handleLogout() {
+  const nameEl = document.getElementById('logout-confirm-name');
+  if (nameEl) nameEl.textContent = state.user?.nama_desa || state.user?.nama || 'akun ini';
+  openModal('modal-logout-confirm');
+}
+
+function performLogout({ silent = false } = {}) {
+  const nama = state.user?.nama_desa || state.user?.nama || '';
   state.token = null;
   state.user = null;
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   updateUIAuth(false);
-  alert('Anda telah keluar (logout).');
+  if (!silent) {
+    showToast('success', 'Berhasil Keluar', nama ? `Sampai jumpa, ${nama}. Anda telah keluar dari akun.` : 'Anda telah keluar dari akun.');
+  }
 }
 
 // Fetch & Render Templates
@@ -909,13 +919,13 @@ window.updateVillageStatus = async (id, status) => {
     const data = await res.json();
 
     if (data.status === 'success') {
-      alert(data.message);
+      showToast('success', 'Berhasil', data.message);
       loadAdminDashboardData();
     } else {
-      alert(`Gagal: ${data.message}`);
+      showToast('error', 'Gagal', data.message);
     }
   } catch (err) {
-    alert('Terjadi kesalahan jaringan.');
+    showToast('error', 'Gangguan Koneksi', 'Terjadi kesalahan jaringan.');
   }
 };
 
@@ -959,13 +969,13 @@ window.updateTemplateStatus = async (id, status) => {
     const data = await res.json();
 
     if (data.status === 'success') {
-      alert(data.message);
+      showToast('success', 'Berhasil', data.message);
       loadTemplates();
     } else {
-      alert(`Gagal: ${data.message}`);
+      showToast('error', 'Gagal', data.message);
     }
   } catch (err) {
-    alert('Terjadi kesalahan jaringan.');
+    showToast('error', 'Gangguan Koneksi', 'Terjadi kesalahan jaringan.');
   }
 };
 
@@ -993,15 +1003,15 @@ async function handleCreateTemplate(e) {
     const data = await res.json();
 
     if (res.status === 201) {
-      alert(data.message);
+      showToast('success', 'Berhasil', data.message);
       closeModal('modal-create-template');
       elements.formCreateTemplate.reset();
       loadTemplates();
     } else {
-      alert(`Gagal membuat templat: ${data.message}`);
+      showToast('error', 'Gagal Membuat Templat', data.message);
     }
   } catch (err) {
-    alert('Terjadi kesalahan jaringan.');
+    showToast('error', 'Gangguan Koneksi', 'Terjadi kesalahan jaringan.');
   }
 }
 
@@ -1211,7 +1221,7 @@ async function handleCreateHosted(e) {
     const data = await res.json();
 
     if (res.status === 201) {
-      alert(data.message);
+      showToast('success', 'Berhasil', data.message);
       closeModal('modal-create-hosted');
       document.getElementById('form-create-hosted').reset();
       loadHostedWebsites();
@@ -1447,7 +1457,7 @@ async function loadTemplateReviews(templateId) {
 async function handleReviewSubmit(e) {
   e.preventDefault();
   if (!state.user || !state.token) {
-    alert('Silakan login terlebih dahulu untuk memberikan ulasan.');
+    showToast('info', 'Perlu Login', 'Silakan login terlebih dahulu untuk memberikan ulasan.');
     openModal('modal-login-desa');
     return;
   }
@@ -1522,3 +1532,43 @@ function syncStickyBarSpacing() {
 }
 window.addEventListener('resize', syncStickyBarSpacing);
 window.addEventListener('load', syncStickyBarSpacing);
+
+
+// ==========================================================================
+// Toast Notification (pengganti alert bawaan browser)
+// ==========================================================================
+function showToast(type = 'info', title = '', message = '', durationMs = 3500) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const icons = {
+    success: 'fa-circle-check',
+    error: 'fa-circle-xmark',
+    info: 'fa-circle-info',
+    warning: 'fa-triangle-exclamation',
+  };
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.setAttribute('role', 'status');
+  toast.innerHTML = `
+    <div class="toast-icon"><i class="fa-solid ${icons[type] || icons.info}"></i></div>
+    <div class="toast-content">
+      <strong class="toast-title"></strong>
+      <p class="toast-message"></p>
+    </div>
+    <button class="toast-close" aria-label="Tutup">&times;</button>
+    <div class="toast-progress" style="animation-duration: ${durationMs}ms"></div>
+  `;
+  toast.querySelector('.toast-title').textContent = title;
+  toast.querySelector('.toast-message').textContent = message || '';
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+
+  const remove = () => {
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 300);
+  };
+  const timer = setTimeout(remove, durationMs);
+  toast.querySelector('.toast-close').addEventListener('click', () => { clearTimeout(timer); remove(); });
+}
+window.showToast = showToast;

@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeri Templat Website Desa - BPS Kabupaten Subang</title>
   <meta name="description" content="Platform Galeri Templat Website Desa Resmi Badan Pusat Statistik Kabupaten Subang. Pilih dan kelola templat website desa di wilayah Kabupaten Subang.">
-  <link rel="stylesheet" href="style.css?v=6.4">
+  <link rel="stylesheet" href="style.css?v=6.5">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -607,6 +607,89 @@
     </div>
   </div>
 
+  <!-- MODAL: Konfirmasi Logout -->
+  <div class="modal-overlay" id="modal-logout-confirm">
+    <div class="modal-card modal-confirm-card">
+      <div class="confirm-icon confirm-icon-warn"><i class="fa-solid fa-right-from-bracket"></i></div>
+      <h3 class="confirm-title">Keluar dari Akun?</h3>
+      <p class="confirm-text">Anda akan keluar dari sesi <strong id="logout-confirm-name">akun ini</strong>. Akses review lengkap, live demo, dan dashboard akan ditutup sampai Anda login kembali.</p>
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-secondary" data-close="modal-logout-confirm">Batal</button>
+        <button type="button" class="btn btn-danger-soft" id="btn-confirm-logout"><i class="fa-solid fa-right-from-bracket"></i> Ya, Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Panduan & Syarat Akses -->
+  <div class="modal-overlay" id="modal-guide">
+    <div class="modal-card modal-guide-card">
+      <div class="guide-hero">
+        <button class="close-btn guide-close" data-close="modal-guide" aria-label="Tutup">&times;</button>
+        <span class="guide-hero-tag"><i class="fa-solid fa-book-open"></i> Panduan Resmi</span>
+        <h3 class="guide-hero-title">Panduan &amp; Syarat Akses Galeri Templat</h3>
+        <p class="guide-hero-sub">BPS Kabupaten Subang &mdash; Program Go-Online Desa</p>
+      </div>
+
+      <div class="guide-body">
+        <h4 class="guide-section-title"><i class="fa-solid fa-list-check"></i> Langkah Mendapatkan Akses</h4>
+        <ol class="guide-steps">
+          <li class="guide-step">
+            <span class="guide-step-num">1</span>
+            <div>
+              <strong>Registrasi Akun Desa</strong>
+              <p>Daftarkan desa Anda melalui tombol "Registrasi Akun Desa" menggunakan email resmi pemerintah desa.</p>
+            </div>
+          </li>
+          <li class="guide-step">
+            <span class="guide-step-num">2</span>
+            <div>
+              <strong>Login &amp; Jelajahi Templat</strong>
+              <p>Setelah login, akses review lengkap, telaah arsitektur, dan live demo setiap templat akan terbuka.</p>
+            </div>
+          </li>
+          <li class="guide-step">
+            <span class="guide-step-num">3</span>
+            <div>
+              <strong>Pilih Templat &amp; Ajukan Hosting</strong>
+              <p>Pilih templat yang sesuai, lalu ajukan domain <em>.desa.id</em> dan pendampingan hosting.</p>
+            </div>
+          </li>
+          <li class="guide-step">
+            <span class="guide-step-num">4</span>
+            <div>
+              <strong>Pendampingan Tim BPS</strong>
+              <p>Tim BPS Kabupaten Subang membantu integrasi data dan pelatihan teknis operator desa.</p>
+            </div>
+          </li>
+        </ol>
+
+        <h4 class="guide-section-title"><i class="fa-solid fa-clipboard-check"></i> Syarat &amp; Ketentuan</h4>
+        <ul class="guide-terms">
+          <li><i class="fa-solid fa-circle-check"></i> Layanan terbuka untuk seluruh Pemerintahan Desa di Kabupaten Subang.</li>
+          <li><i class="fa-solid fa-circle-check"></i> Pendaftar adalah aparatur atau operator desa yang ditunjuk.</li>
+          <li><i class="fa-solid fa-circle-check"></i> Satu desa menggunakan satu akun resmi.</li>
+          <li><i class="fa-solid fa-circle-check"></i> Konten website mengikuti kaidah Satu Data Indonesia dan standar BPS.</li>
+        </ul>
+
+        <div class="guide-help">
+          <i class="fa-solid fa-headset"></i>
+          <div>
+            <strong>Butuh bantuan?</strong>
+            <span>Hubungi BPS Kabupaten Subang &mdash; Jl. Aipda KS Tubun No.12, Cigadung, Subang.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-footer">
+        <button type="button" class="btn btn-secondary" id="btn-guide-login"><i class="fa-solid fa-right-to-bracket"></i> Masuk Desa</button>
+        <button type="button" class="btn btn-bps-orange" id="btn-guide-register"><i class="fa-solid fa-user-plus"></i> Registrasi Akun Desa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container Notifikasi Toast -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
   <!-- Footer BPS Subang -->
   <footer>
     <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
@@ -721,6 +804,6 @@
     </div>
   </aside>
 
-  <script src="app.js?v=6.3"></script>
+  <script src="app.js?v=6.5"></script>
 </body>
 </html>

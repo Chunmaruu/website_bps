@@ -2665,3 +2665,170 @@ body.has-sticky-bar footer {
   font-size: 0.8rem;
   color: #34d399;
 }
+
+
+/* ==========================================================================
+   TOAST NOTIFICATION
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  top: 88px;
+  right: 1.25rem;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 2.5rem));
+  pointer-events: none;
+}
+
+.toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px 16px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--bps-blue);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 35, 71, 0.18);
+  overflow: hidden;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.toast.show { opacity: 1; transform: translateX(0); }
+.toast.hide { opacity: 0; transform: translateX(24px); }
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+}
+.toast-content { flex: 1; min-width: 0; }
+.toast-title { display: block; font-size: 0.92rem; color: var(--text-title); margin-bottom: 2px; }
+.toast-message { margin: 0; font-size: 0.84rem; line-height: 1.45; color: var(--text-body); }
+.toast-close {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.2rem; line-height: 1; color: #94a3b8; padding: 0 2px;
+}
+.toast-close:hover { color: var(--text-title); }
+.toast-progress {
+  position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+  background: currentColor; opacity: 0.35;
+  transform-origin: left;
+  animation: toast-progress linear forwards;
+}
+@keyframes toast-progress { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+.toast-success { border-left-color: #16a34a; color: #16a34a; }
+.toast-success .toast-icon { background: #dcfce7; color: #16a34a; }
+.toast-error { border-left-color: #dc2626; color: #dc2626; }
+.toast-error .toast-icon { background: #fee2e2; color: #dc2626; }
+.toast-info { border-left-color: var(--bps-blue); color: var(--bps-blue); }
+.toast-info .toast-icon { background: #e0f2fe; color: var(--bps-blue); }
+.toast-warning { border-left-color: #f59e0b; color: #f59e0b; }
+.toast-warning .toast-icon { background: #fef3c7; color: #d97706; }
+
+@media (max-width: 640px) {
+  .toast-container { top: auto; bottom: 90px; right: 50%; transform: translateX(50%); }
+}
+
+/* ==========================================================================
+   MODAL KONFIRMASI LOGOUT
+   ========================================================================== */
+.modal-confirm-card { max-width: 420px; text-align: center; padding: 2rem 2rem 1.75rem; }
+.confirm-icon {
+  width: 64px; height: 64px; margin: 0 auto 1rem;
+  border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem;
+}
+.confirm-icon-warn { background: #fff7ed; color: var(--bps-orange); box-shadow: 0 0 0 8px #fff7ed80; }
+.confirm-title { font-size: 1.3rem; font-weight: 800; color: var(--text-title); margin: 0 0 0.5rem; }
+.confirm-text { font-size: 0.92rem; color: var(--text-body); line-height: 1.55; margin: 0 0 1.5rem; }
+.confirm-actions { display: flex; gap: 10px; justify-content: center; }
+.confirm-actions .btn { flex: 1; justify-content: center; }
+.btn-danger-soft {
+  background: #dc2626; color: #ffffff; border: 1px solid #dc2626;
+}
+.btn-danger-soft:hover { background: #b91c1c; border-color: #b91c1c; }
+
+/* ==========================================================================
+   MODAL PANDUAN & SYARAT
+   ========================================================================== */
+.modal-guide-card {
+  max-width: 620px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem);
+}
+.guide-hero {
+  position: relative;
+  padding: 1.75rem 2rem 1.5rem;
+  background: linear-gradient(135deg, var(--bps-navy) 0%, #003b73 60%, var(--bps-blue) 100%);
+  color: #ffffff;
+}
+.guide-close { position: absolute; top: 14px; right: 16px; color: #cbd5e1; }
+.guide-close:hover { color: #ffffff; }
+.guide-hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px;
+  background: rgba(245, 130, 32, 0.18); border: 1px solid rgba(245, 130, 32, 0.5);
+  color: #fdba74; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.guide-hero-title { margin: 0.75rem 0 0.25rem; font-size: 1.35rem; font-weight: 800; color: #ffffff; }
+.guide-hero-sub { margin: 0; font-size: 0.86rem; color: #cbd5e1; }
+
+.guide-body { padding: 1.5rem 2rem; overflow-y: auto; }
+.guide-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.95rem; font-weight: 800; color: var(--text-title); margin: 0 0 0.9rem;
+}
+.guide-section-title i { color: var(--bps-blue); }
+
+.guide-steps { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 10px; }
+.guide-step {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 12px;
+  background: #f8fafc; transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.guide-step:hover { border-color: #93c5fd; transform: translateY(-1px); }
+.guide-step-num {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bps-blue); color: #ffffff; font-size: 0.82rem; font-weight: 800;
+}
+.guide-step strong { display: block; font-size: 0.9rem; color: var(--text-title); margin-bottom: 2px; }
+.guide-step p { margin: 0; font-size: 0.84rem; color: var(--text-body); line-height: 1.5; }
+
+.guide-terms { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: 8px; }
+.guide-terms li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.86rem; color: var(--text-body); line-height: 1.5; }
+.guide-terms i { color: #16a34a; margin-top: 3px; }
+
+.guide-help {
+  display: flex; gap: 12px; align-items: center;
+  padding: 12px 14px; border-radius: 12px;
+  background: #fff7ed; border: 1px solid #fed7aa;
+}
+.guide-help i { font-size: 1.3rem; color: var(--bps-orange); }
+.guide-help strong { display: block; font-size: 0.88rem; color: #9a3412; }
+.guide-help span { font-size: 0.82rem; color: #b45309; }
+
+.guide-footer {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding: 1rem 2rem; border-top: 1px solid var(--border-color); background: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .guide-hero, .guide-body, .guide-footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .guide-footer { flex-direction: column-reverse; }
+  .guide-footer .btn, .confirm-actions .btn { width: 100%; justify-content: center; }
+  .confirm-actions { flex-direction: column-reverse; }
+}
