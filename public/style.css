@@ -2641,3 +2641,27 @@ img, video, canvas {
 body.has-sticky-bar footer {
   padding-bottom: calc(1.75rem + var(--sticky-bar-h, 72px)) !important;
 }
+
+
+/* Badge "Go-Online Desa Subang" pada kartu ajakan (latar gelap) */
+.benefits-tag.benefits-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  color: #6ee7b7;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+.benefits-tag.benefits-tag-pill i {
+  font-size: 0.8rem;
+  color: #34d399;
+}
