@@ -81,6 +81,8 @@ const elements = {
 
 // Inisialisasi Aplikasi
 document.addEventListener('DOMContentLoaded', () => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (!window.location.hash || window.location.hash !== '#admin') window.scrollTo(0, 0);
   setupEventListeners();
   checkAuthSession();
   loadTemplates();

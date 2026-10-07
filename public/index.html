@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <script>
+    // Selalu kembali ke atas saat halaman di-refresh
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    window.addEventListener('load', function() {
+      if (!window.location.hash || window.location.hash !== '#admin') {
+        window.scrollTo(0, 0);
+      }
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeri Templat Website Desa - BPS Kabupaten Subang</title>
