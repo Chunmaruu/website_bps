@@ -18,6 +18,25 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+let databaseInitialization;
+
+function prepareDatabase() {
+  if (!databaseInitialization) {
+    databaseInitialization = sequelize.sync().then(() => {
+      console.log('Sinkronisasi model database berhasil.');
+      return true;
+    }, () => {
+      databaseInitialization = undefined;
+      console.warn('Koneksi atau sinkronisasi database gagal.');
+      return false;
+    });
+  }
+  return databaseInitialization;
+}
+
+function databaseUnavailable(res) {
+  return res.status(503).json({ status: 'error', message: 'Database belum siap.' });
+}
 
 // Middleware
 app.use(cors());
@@ -34,6 +53,29 @@ app.get(['/', '/admin'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/api/status', async (req, res) => {
+  if (!(await prepareDatabase())) return databaseUnavailable(res);
+  try {
+    await sequelize.authenticate();
+    res.json({
+      status: 'success',
+      message: 'Server Express berjalan dan database terhubung.',
+      timestamp: new Date(),
+      env: process.env.NODE_ENV,
+      db: { dialect: sequelize.getDialect(), connected: true },
+    });
+  } catch {
+    return databaseUnavailable(res);
+  }
+});
+
+if (process.env.VERCEL) {
+  app.use(['/api', '/desa'], async (req, res, next) => {
+    if (!(await prepareDatabase())) return databaseUnavailable(res);
+    next();
+  });
+}
+
 // Rute Autentikasi
 app.use('/api/auth', authRoutes);
 
@@ -49,62 +91,19 @@ app.use('/api/my-website', createWebsiteRouter());
 app.get('/desa/:slug', publicVillage);
 app.get('/desa/:slug/dokumen', publicVillage);
 
-// Endpoint status (Health check)
-app.get('/api/status', async (req, res) => {
-  try {
-    await sequelize.authenticate();
-    res.json({
-      status: 'success',
-      message: 'Server Express berjalan dan database terhubung.',
-      timestamp: new Date(),
-      env: process.env.NODE_ENV,
-      db: {
-        dialect: sequelize.getDialect(),
-        connected: true
-      }
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      message: 'Server Express berjalan tetapi koneksi database gagal.',
-      timestamp: new Date(),
-      error: error.message
-    });
-  }
-});
-
 // Unknown paths must not expose source files or masquerade as the SPA.
 app.use((req, res) => res.status(404).json({ status: 'error', message: 'Tidak ditemukan.' }));
 
-// Jalankan server dan hubungkan ke database
-const startServer = async () => {
-  try {
-    try {
-      await sequelize.authenticate();
-      console.log('Koneksi database berhasil dilakukan.');
-      
-      // Sinkronisasi model database
-      await sequelize.sync();
-      console.log('Sinkronisasi model database berhasil.');
+if (!process.env.VERCEL) {
+  prepareDatabase().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server berjalan dalam mode ${process.env.NODE_ENV || 'development'} pada port ${PORT}`);
+    });
+  }).catch(() => {
+    console.error('Gagal menjalankan server.');
+    process.exitCode = 1;
+  });
+}
 
-    } catch (dbErr) {
-      console.warn('Database connection/sync warning:', dbErr.message);
-    }
-    
-    // Hanya lakukan app.listen jika tidak berjalan di environment serverless Vercel
-    if (!process.env.VERCEL) {
-      app.listen(PORT, () => {
-        console.log(`Server berjalan dalam mode ${process.env.NODE_ENV || 'development'} pada port ${PORT}`);
-      });
-    }
-  } catch (error) {
-    console.error('Gagal menjalankan server:', error);
-    if (!process.env.VERCEL) {
-      process.exit(1);
-    }
-  }
-};
-
-startServer();
 export default app;
 
