@@ -2,6 +2,7 @@ import sequelize from '../config/db.js';
 import AdminBps from './AdminBps.js';
 import AdminDesa from './AdminDesa.js';
 import Review from './Review.js';
+import VillageWebsite from './VillageWebsite.js';
 
 // Relasi tabel
 AdminDesa.hasMany(Review, { foreignKey: 'user_id', as: 'reviews', constraints: false });
@@ -12,7 +13,8 @@ const db = {
   AdminBps,
   AdminDesa,
   Review,
+  VillageWebsite,
 };
 
-export { sequelize, AdminBps, AdminDesa, Review };
+export { sequelize, AdminBps, AdminDesa, Review, VillageWebsite };
 export default db;

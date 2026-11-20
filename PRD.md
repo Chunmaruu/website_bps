@@ -177,3 +177,6 @@ Sebagian templat website desa menggunakan spreadsheet sebagai database kontennya
 - Dashboard statistik templat terpopuler
 - Notifikasi real-time (email/push) saat status akun desa berubah
 - Fitur cek status koneksi spreadsheet milik templat individual (opsional, untuk troubleshooting)
+## Pengembangan: Website Saya
+
+Platform kini menyediakan alur website terkelola: akun desa memilih renderer lokal Desa Informatif, menghubungkan spreadsheet sendiri, menyinkronkan data ke draf, meninjau, lalu menerbitkan ke `/desa/:slug`. Akun dan konfigurasi website serta snapshot draf/publik disimpan di database relasional. Spreadsheet master galeri tetap terpisah. Detail persiapan dan batas versi awal ada di `WEBSITE_DESA_SETUP.md`.

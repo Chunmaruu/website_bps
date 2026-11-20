@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_bps_village_gallery_2026';
+import { JWT_SECRET } from '../config/auth.js';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
 
 /**
@@ -195,6 +195,11 @@ export const loginBps = async (req, res) => {
         status: 'error',
         message: 'Email atau password salah.',
       });
+    }
+
+    // Legacy seeded credentials must be replaced by the operator before login.
+    if (password === 'admin123') {
+      return res.status(403).json({ status: 'error', message: 'Password bawaan tidak dapat digunakan. Hubungi pengelola untuk mengganti password admin.' });
     }
 
     // Cek status admin BPS

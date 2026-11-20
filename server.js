@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import villageManagementRoutes from './routes/villageManagementRoutes.js';
 import templateRoutes from './routes/templateRoutes.js';
 import hostedWebsiteRoutes from './routes/hostedWebsiteRoutes.js';
+import { createWebsiteRouter, publicVillage } from './routes/websiteRoutes.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,9 +24,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sajikan file statis dari direktori 'public', root, dan 'gambar'
+// Hanya aset publik yang boleh diakses melalui HTTP.
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(__dirname));
 app.use('/gambar', express.static(path.join(__dirname, 'gambar')));
 app.use('/gambar', express.static(path.join(__dirname, 'public', 'gambar')));
 
@@ -45,6 +45,9 @@ app.use('/api/templates', templateRoutes);
 
 // Rute Direktori Website Desa yang Sudah Hosting
 app.use('/api/hosted-websites', hostedWebsiteRoutes);
+app.use('/api/my-website', createWebsiteRouter());
+app.get('/desa/:slug', publicVillage);
+app.get('/desa/:slug/dokumen', publicVillage);
 
 // Endpoint status (Health check)
 app.get('/api/status', async (req, res) => {
@@ -56,7 +59,7 @@ app.get('/api/status', async (req, res) => {
       timestamp: new Date(),
       env: process.env.NODE_ENV,
       db: {
-        dialect: process.env.DB_DIALECT || 'sqlite',
+        dialect: sequelize.getDialect(),
         connected: true
       }
     });
@@ -70,13 +73,8 @@ app.get('/api/status', async (req, res) => {
   }
 });
 
-// Fallback jika ada request GET yang bukan /api
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api')) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// Unknown paths must not expose source files or masquerade as the SPA.
+app.use((req, res) => res.status(404).json({ status: 'error', message: 'Tidak ditemukan.' }));
 
 // Jalankan server dan hubungkan ke database
 const startServer = async () => {
@@ -89,22 +87,6 @@ const startServer = async () => {
       await sequelize.sync();
       console.log('Sinkronisasi model database berhasil.');
 
-      // Auto-seed default Admin BPS jika belum ada (berguna untuk login awal petugas BPS)
-      const defaultEmail = 'admin@bps.go.id';
-      const { AdminBps } = await import('./models/index.js');
-      const existingAdmin = await AdminBps.findOne({ where: { email: defaultEmail } });
-      if (!existingAdmin) {
-        const bcrypt = (await import('bcryptjs')).default;
-        const salt = await bcrypt.genSalt(10);
-        const password_hash = await bcrypt.hash('admin123', salt);
-        await AdminBps.create({
-          nama: 'Super Admin BPS',
-          email: defaultEmail,
-          password_hash,
-          status: 'aktif',
-        });
-        console.log('Auto-seed default Admin BPS berhasil (admin@bps.go.id).');
-      }
     } catch (dbErr) {
       console.warn('Database connection/sync warning:', dbErr.message);
     }

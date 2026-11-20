@@ -3,19 +3,28 @@ import { sequelize, AdminBps } from '../models/index.js';
 
 const seedAdminBps = async () => {
   try {
+    const defaultEmail = process.env.ADMIN_BPS_EMAIL;
+    const defaultPassword = process.env.ADMIN_BPS_PASSWORD;
+    if (!defaultEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(defaultEmail) || !defaultPassword || defaultPassword.length < 5) {
+      throw new Error('Isi ADMIN_BPS_EMAIL dan ADMIN_BPS_PASSWORD unik minimal 5 karakter.');
+    }
+
     await sequelize.authenticate();
     console.log('Database terhubung untuk seeding.');
 
     // Melakukan sinkronisasi untuk memastikan tabel sudah terbuat
     await sequelize.sync();
 
-    const defaultEmail = 'admin@bps.go.id';
-    const defaultPassword = 'admin123';
-
     // Memeriksa apakah admin BPS default sudah ada
     const existingAdmin = await AdminBps.findOne({ where: { email: defaultEmail } });
     if (existingAdmin) {
-      console.log(`Admin BPS dengan email "${defaultEmail}" sudah terdaftar.`);
+      if (await bcrypt.compare('admin123', existingAdmin.password_hash)) {
+        existingAdmin.password_hash = await bcrypt.hash(defaultPassword, 12);
+        await existingAdmin.save();
+        console.log('Password admin bawaan berhasil diganti.');
+      } else {
+        console.log('Admin sudah terdaftar; password yang bukan bawaan tidak diubah.');
+      }
       process.exit(0);
     }
 
@@ -34,7 +43,7 @@ const seedAdminBps = async () => {
     console.log('--------------------------------------------------');
     console.log('Seeding Admin BPS Berhasil!');
     console.log(`Email    : ${defaultEmail}`);
-    console.log(`Password : ${defaultPassword}`);
+
     console.log('--------------------------------------------------');
     process.exit(0);
   } catch (error) {

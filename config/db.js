@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 // Memastikan variabel lingkungan dimuat
 dotenv.config();
 
-const dialect = process.env.DB_DIALECT || 'sqlite';
+const dialect = process.env.DB_DIALECT || 'mysql';
 
 let sequelize;
 

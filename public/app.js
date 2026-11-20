@@ -360,8 +360,8 @@ function showAuthAlert(alertEl, type, title, message, durationMs = 3000) {
   alertEl.innerHTML = `
     ${icon}
     <div style="flex: 1;">
-      <strong style="display: block; font-size: 0.95rem; margin-bottom: 2px;">${title}</strong>
-      <div style="font-size: 0.85rem; line-height: 1.4;">${message}</div>
+      <strong style="display: block; font-size: 0.95rem; margin-bottom: 2px;">${escapeHtml(title)}</strong>
+      <div style="font-size: 0.85rem; line-height: 1.4;">${escapeHtml(message)}</div>
       ${isError && durationMs > 0 ? `<div class="auth-alert-timer"><div class="auth-alert-timer-bar" style="animation-duration: ${durationMs / 1000}s;"></div></div>` : ''}
     </div>
   `;
@@ -417,6 +417,7 @@ async function checkAuthSession() {
 }
 
 function updateUIAuth(isLoggedIn) {
+  window.dispatchEvent(new CustomEvent('village-auth-change', { detail: { loggedIn: isLoggedIn } }));
   const guestNoticeBox = document.getElementById('guest-notice-box');
   const stickyBottomBar = document.getElementById('sticky-bottom-bar');
   const metaStatusBadge = document.getElementById('meta-status-badge');
@@ -528,7 +529,7 @@ async function loadTemplates() {
         renderAdminTemplatesTable(data.data);
       }
     } else {
-      elements.templateGrid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Gagal memuat templat: ${data.message}</p>`;
+      elements.templateGrid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Gagal memuat templat: ${escapeHtml(data.message)}</p>`;
     }
   } catch (err) {
     console.error('Fetch templates error:', err);
@@ -562,35 +563,35 @@ function renderTemplateCards(templates) {
       const displayRating = t.rating ? Number(t.rating).toFixed(1) : '5.0';
 
       const statusBadge = t.status && t.status !== 'Aktif' 
-        ? `<span class="card-badge" style="background: rgba(245,158,11,0.9); color: white;">${t.status}</span>`
-        : `<span class="card-badge">${t.kategori}</span>`;
+        ? `<span class="card-badge" style="background: rgba(245,158,11,0.9); color: white;">${escapeHtml(t.status)}</span>`
+        : `<span class="card-badge">${escapeHtml(t.kategori)}</span>`;
 
       const rightBadge = isGuest
         ? `<span class="badge-locked"><i class="fa-solid fa-lock"></i> Butuh Akun Desa</span>`
-        : `<span class="card-db-badge">${t.tipe_database}</span>`;
+        : `<span class="card-db-badge">${escapeHtml(t.tipe_database)}</span>`;
 
       const actionButton = isGuest
         ? `<button onclick="openModal('modal-login-desa')" class="btn-locked-access">
              <i class="fa-solid fa-lock" style="color: #fbbf24;"></i> Login untuk Akses Review &amp; Demo
            </button>`
         : `<div class="card-actions-dual">
-             <button onclick="openReviewModal('${t.id}', '${escapeHtml(t.nama_templat)}')" class="btn btn-secondary btn-sm" style="font-weight: 700; color: var(--bps-navy); justify-content: center;">
+             <button onclick="openReviewModal(${escapeHtml(JSON.stringify(String(t.id)))}, ${escapeHtml(JSON.stringify(String(t.nama_templat)))})" class="btn btn-secondary btn-sm" style="font-weight: 700; color: var(--bps-navy); justify-content: center;">
                <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Ulasan (${totalReviews})
              </button>
-             <a href="${t.link_templat}" target="_blank" class="btn btn-primary btn-sm" style="font-weight: 700; justify-content: center;">
+             <a href="${escapeHtml(safeHttpUrl(t.link_templat))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="font-weight: 700; justify-content: center;">
                Live Demo <i class="fa-solid fa-arrow-up-right-from-square"></i>
              </a>
            </div>`;
 
       const ratingRow = isGuest
-        ? `<div class="card-rating-row" style="cursor: pointer;" onclick="openReviewModal('${t.id}', '${escapeHtml(t.nama_templat)}')">
+        ? `<div class="card-rating-row" style="cursor: pointer;" onclick="openReviewModal(${escapeHtml(JSON.stringify(String(t.id)))}, ${escapeHtml(JSON.stringify(String(t.nama_templat)))})">
              <div class="stars">
                ${renderStarsHtml(t.rating || 5)}
                <span class="rating-text">(${totalReviews} Ulasan)</span>
              </div>
              <span class="lock-review-label"><i class="fa-solid fa-lock"></i> Review Terkunci</span>
            </div>`
-        : `<div class="card-rating-row" style="cursor: pointer;" onclick="openReviewModal('${t.id}', '${escapeHtml(t.nama_templat)}')">
+        : `<div class="card-rating-row" style="cursor: pointer;" onclick="openReviewModal(${escapeHtml(JSON.stringify(String(t.id)))}, ${escapeHtml(JSON.stringify(String(t.nama_templat)))})">
              <div class="stars">
                ${renderStarsHtml(t.rating || 5)}
                <span class="rating-text">(${totalReviews} Ulasan • ${displayRating}/5.0)</span>
@@ -601,14 +602,14 @@ function renderTemplateCards(templates) {
       return `
         <div class="template-card">
           <div class="card-thumb">
-            <img src="${thumbnail}" alt="${t.nama_templat}" onerror="this.src='${defaultImg}'">
+            <img src="${escapeHtml(safeHttpUrl(thumbnail))}" alt="${escapeHtml(t.nama_templat)}" onerror="this.src='${defaultImg}'">
             ${statusBadge}
             ${rightBadge}
           </div>
           <div class="card-body">
-            <span class="card-id-tag">ID: ${t.id}</span>
-            <h3 class="card-title">${t.nama_templat}</h3>
-            <p class="card-desc">${t.deskripsi || 'Templat resmi website desa binaan BPS Kabupaten Subang.'}</p>
+            <span class="card-id-tag">ID: ${escapeHtml(t.id)}</span>
+            <h3 class="card-title">${escapeHtml(t.nama_templat)}</h3>
+            <p class="card-desc">${escapeHtml(t.deskripsi || 'Templat resmi website desa binaan BPS Kabupaten Subang.')}</p>
             ${ratingRow}
             <div class="card-footer" style="padding-top: 0; border-top: none;">
               ${actionButton}
@@ -885,18 +886,18 @@ function renderAdminVillagesTable(villages) {
     .map((v, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><strong>${v.nama_desa}</strong></td>
-        <td>${v.kecamatan}, ${v.kabupaten}, ${v.provinsi}</td>
-        <td>${v.nama_pic}</td>
-        <td>${v.email}</td>
-        <td><span class="status-badge status-${v.status}">${v.status === 'approved' ? 'Aktif' : v.status === 'nonaktif' ? 'Dinonaktifkan' : v.status}</span></td>
+        <td><strong>${escapeHtml(v.nama_desa)}</strong></td>
+        <td>${escapeHtml(v.kecamatan)}, ${escapeHtml(v.kabupaten)}, ${escapeHtml(v.provinsi)}</td>
+        <td>${escapeHtml(v.nama_pic)}</td>
+        <td>${escapeHtml(v.email)}</td>
+        <td><span class="status-badge status-${escapeHtml(v.status)}">${v.status === 'approved' ? 'Aktif' : v.status === 'nonaktif' ? 'Dinonaktifkan' : escapeHtml(v.status)}</span></td>
         <td>
           ${v.status === 'approved'
-            ? `<button onclick="updateVillageStatus(${v.id}, 'nonaktif')" class="btn btn-secondary btn-sm" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);"><i class="fa-solid fa-ban"></i> Nonaktifkan Sementara</button>`
+            ? `<button onclick="updateVillageStatus(${Number(v.id)}, 'nonaktif')" class="btn btn-secondary btn-sm" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);"><i class="fa-solid fa-ban"></i> Nonaktifkan Sementara</button>`
             : v.status === 'nonaktif'
-            ? `<button onclick="updateVillageStatus(${v.id}, 'approved')" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i> Aktifkan Kembali</button>`
-            : `<button onclick="updateVillageStatus(${v.id}, 'approved')" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i> Aktifkan</button>
-               <button onclick="updateVillageStatus(${v.id}, 'nonaktif')" class="btn btn-danger btn-sm"><i class="fa-solid fa-ban"></i> Nonaktifkan</button>`
+            ? `<button onclick="updateVillageStatus(${Number(v.id)}, 'approved')" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i> Aktifkan Kembali</button>`
+            : `<button onclick="updateVillageStatus(${Number(v.id)}, 'approved')" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i> Aktifkan</button>
+               <button onclick="updateVillageStatus(${Number(v.id)}, 'nonaktif')" class="btn btn-danger btn-sm"><i class="fa-solid fa-ban"></i> Nonaktifkan</button>`
           }
         </td>
       </tr>
@@ -938,14 +939,14 @@ function renderAdminTemplatesTable(templates) {
   elements.tableTemplatesBody.innerHTML = templates
     .map((t) => `
       <tr>
-        <td><code>${t.id}</code></td>
-        <td><strong>${t.nama_templat}</strong></td>
-        <td>${t.kategori}</td>
-        <td>${t.tipe_database}</td>
-        <td><span class="status-badge status-${t.status.toLowerCase()}">${t.status}</span></td>
-        <td><a href="${t.link_templat}" target="_blank" style="color: #38bdf8;">Preview <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+        <td><code>${escapeHtml(t.id)}</code></td>
+        <td><strong>${escapeHtml(t.nama_templat)}</strong></td>
+        <td>${escapeHtml(t.kategori)}</td>
+        <td>${escapeHtml(t.tipe_database)}</td>
+        <td><span class="status-badge status-${escapeHtml(t.status.toLowerCase())}">${escapeHtml(t.status)}</span></td>
+        <td><a href="${escapeHtml(safeHttpUrl(t.link_templat))}" target="_blank" rel="noopener noreferrer" style="color: #38bdf8;">Preview <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
         <td>
-          <select onchange="updateTemplateStatus('${t.id}', this.value)" class="form-control" style="height: 32px; font-size: 0.8rem; padding: 0 4px; width: 110px;">
+          <select onchange="updateTemplateStatus(${escapeHtml(JSON.stringify(String(t.id)))}, this.value)" class="form-control" style="height: 32px; font-size: 0.8rem; padding: 0 4px; width: 110px;">
             <option value="Aktif" ${t.status === 'Aktif' ? 'selected' : ''}>Aktif</option>
             <option value="Draft" ${t.status === 'Draft' ? 'selected' : ''}>Draft</option>
             <option value="Nonaktif" ${t.status === 'Nonaktif' ? 'selected' : ''}>Nonaktif</option>
@@ -1106,7 +1107,7 @@ async function loadHostedWebsites() {
         renderAdminHostedTable(data.data);
       }
     } else {
-      hostedGrid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Gagal memuat web desa: ${data.message}</p>`;
+      hostedGrid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Gagal memuat web desa: ${escapeHtml(data.message)}</p>`;
     }
   } catch (err) {
     console.error('Fetch hosted websites error:', err);
@@ -1142,7 +1143,7 @@ function renderHostedWebsites(sites) {
     return `
       <div class="template-card hosted-card">
         <div class="card-thumb">
-          <img src="${thumb}" alt="${escapeHtml(s.nama_desa)}" onerror="this.src='${defaultImg}'">
+          <img src="${escapeHtml(safeHttpUrl(thumb))}" alt="${escapeHtml(s.nama_desa)}" onerror="this.src='${defaultImg}'">
           <span class="badge-live-online"><span class="beacon-dot"></span> Online / Live</span>
           <span class="card-badge" style="top: auto; bottom: 12px; left: 12px;">${escapeHtml(s.kategori)}</span>
           <span style="position: absolute; bottom: 12px; right: 12px;">${dbBadge}</span>
@@ -1158,7 +1159,7 @@ function renderHostedWebsites(sites) {
             <span>Templat: <strong>${escapeHtml(s.nama_templat)}</strong></span>
           </div>
           <div class="card-footer" style="padding-top: 0; border-top: none;">
-            <a href="${s.link_hosting}" target="_blank" rel="noopener noreferrer" class="btn-visit-hosted">
+            <a href="${escapeHtml(safeHttpUrl(s.link_hosting))}" target="_blank" rel="noopener noreferrer" class="btn-visit-hosted">
               <i class="fa-solid fa-globe"></i> Kunjungi Website Resmi Desa <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 4px;"></i>
             </a>
           </div>
@@ -1188,7 +1189,7 @@ function renderAdminHostedTable(sites) {
       <td>${escapeHtml(s.nama_templat)}</td>
       <td><span class="card-db-badge" style="font-size: 0.75rem;">${escapeHtml(s.tipe_database)}</span></td>
       <td><span class="status-badge status-approved">${escapeHtml(s.status)}</span></td>
-      <td><a href="${s.link_hosting}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: 600;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Website</a></td>
+      <td><a href="${escapeHtml(safeHttpUrl(s.link_hosting))}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: 600;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Website</a></td>
     </tr>
   `).join('');
 }
@@ -1270,6 +1271,13 @@ function formatThumbnailUrl(url) {
 // ==========================================================================
 // REVIEW & RATING HELPERS
 // ==========================================================================
+
+function safeHttpUrl(value) {
+  try {
+    const url = new URL(String(value), window.location.origin);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '#';
+  } catch { return '#'; }
+}
 
 function escapeHtml(str) {
   if (!str) return '';

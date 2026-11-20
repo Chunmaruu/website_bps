@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_bps_village_gallery_2026';
+import { JWT_SECRET } from '../config/auth.js';
 
 /**
  * Middleware untuk memverifikasi token JWT dari header Authorization.
@@ -20,7 +20,7 @@ export const authenticateToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
     req.user = decoded; // Menyimpan data user (id dan role) ke objek req
     next();
   } catch (error) {

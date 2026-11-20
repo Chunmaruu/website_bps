@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="style.css?v=6.6">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/my-website.css?v=2">
 </head>
 <body>
 
@@ -119,6 +120,14 @@
         </div>
       </div>
 
+      <section class="managed-template-card" aria-labelledby="micro-portal-title">
+        <div>
+          <h2 id="micro-portal-title">Micro-Portal Desa Cantik</h2>
+          <p>Terbitkan profil, statistik, potensi, dan dokumen desa dari Google Sheets milik desa.</p>
+        </div>
+        <button type="button" id="use-micro-portal" class="btn btn-primary">Gunakan Templat</button>
+      </section>
+
       <!-- Bar Kontrol Pencarian & Filter Kategori (Gaya BPS) -->
       <section class="controls-card">
         <div class="controls-bar">
@@ -166,8 +175,8 @@
           <div class="benefit-item">
             <div class="benefit-icon"><i class="fa-solid fa-globe"></i></div>
             <div>
-              <h4>Akses Live Demo &amp; Unduh Source Code</h4>
-              <p>Uji coba langsung halaman interaktif desa dan dapatkan lisensi resmi gratis untuk Pemdes Kabupaten Subang.</p>
+              <h4>Pratinjau dan Terbitkan Website Desa</h4>
+              <p>Hubungkan Google Sheets desa dan lihat pratinjau sebelum menerbitkan website.</p>
             </div>
           </div>
           <div class="benefit-item">
@@ -413,11 +422,11 @@
         <div id="login-bps-alert" class="auth-alert" style="display: none;"></div>
         <div class="form-group">
           <label for="login-bps-email">Email Admin BPS</label>
-          <input type="email" id="login-bps-email" class="form-control" required placeholder="admin@bps.go.id" value="admin@bps.go.id">
+          <input type="email" id="login-bps-email" class="form-control" required placeholder="admin@bps.go.id" >
         </div>
         <div class="form-group">
           <label for="login-bps-password">Password</label>
-          <input type="password" id="login-bps-password" class="form-control" required placeholder="••••••••" value="admin123">
+          <input type="password" id="login-bps-password" class="form-control" required placeholder="••••••••" >
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Masuk Panel BPS Subang</button>
       </form>
@@ -650,8 +659,8 @@
           <li class="guide-step">
             <span class="guide-step-num">3</span>
             <div>
-              <strong>Pilih Templat &amp; Ajukan Hosting</strong>
-              <p>Pilih templat yang sesuai, lalu ajukan domain <em>.desa.id</em> dan pendampingan hosting.</p>
+              <strong>Pilih dan Gunakan Templat</strong>
+              <p>Klik Gunakan Templat, hubungkan Google Sheets, lalu terbitkan dari Website Saya.</p>
             </div>
           </li>
           <li class="guide-step">
@@ -805,5 +814,6 @@
   </aside>
 
   <script src="app.js?v=6.6"></script>
+  <script src="/my-website.js?v=2"></script>
 </body>
 </html>
