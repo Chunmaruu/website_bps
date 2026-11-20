@@ -1,11 +1,13 @@
 import { Sequelize } from 'sequelize';
+import mysql2 from 'mysql2';
+import pg from 'pg';
 import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
 
 // Memastikan variabel lingkungan dimuat
 dotenv.config();
 
-const dialect = process.env.DB_DIALECT || 'mysql';
+const dialect = process.env.DB_DIALECT || (process.env.VERCEL ? 'sqlite' : 'mysql');
 
 let sequelize;
 
@@ -26,6 +28,7 @@ if (dialect === 'sqlite') {
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT, 10) || (dialect === 'mysql' ? 3306 : 5432),
       dialect: dialect,
+      dialectModule: dialect === 'mysql' ? mysql2 : pg,
       logging: process.env.NODE_ENV === 'development' ? console.log : false,
       pool: {
         max: 5,
