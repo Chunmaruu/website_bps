@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { sequelize } from './models/index.js';
+import { AdminBps, sequelize } from './models/index.js';
 import authRoutes from './routes/authRoutes.js';
 import villageManagementRoutes from './routes/villageManagementRoutes.js';
 import templateRoutes from './routes/templateRoutes.js';
 import hostedWebsiteRoutes from './routes/hostedWebsiteRoutes.js';
 import { createWebsiteRouter, publicVillage } from './routes/websiteRoutes.js';
+import { bootstrapFirstAdmin } from './services/adminBpsBootstrap.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -22,10 +23,13 @@ let databaseInitialization;
 
 function prepareDatabase() {
   if (!databaseInitialization) {
-    databaseInitialization = sequelize.sync().then(() => {
+    databaseInitialization = sequelize.sync().then(async () => {
       console.log('Sinkronisasi model database berhasil.');
+      if (await bootstrapFirstAdmin({ sequelize, AdminBps })) {
+        console.log('Admin BPS awal telah disiapkan.');
+      }
       return true;
-    }, () => {
+    }).catch(() => {
       databaseInitialization = undefined;
       console.warn('Koneksi atau sinkronisasi database gagal.');
       return false;
